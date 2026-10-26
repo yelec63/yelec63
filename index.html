@@ -183,6 +183,10 @@ footer .w{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;ali
   html{scroll-behavior:auto}
 }
 </style>
+<link rel="stylesheet" href="ye-3d.css">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}
+</script>
 </head>
 <body>
 
@@ -230,9 +234,9 @@ footer .w{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;ali
   <div class="orb orb1"></div>
   <div class="orb orb2"></div>
 
-  <div class="w" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,0.85fr);gap:35px;align-items:center;">
+  <div class="w hero-layout">
 
-    <div>
+    <div class="hero-copy">
       <span class="badge">
         <span class="dot"></span>
         Urgences H24 · Puy-de-Dôme
@@ -261,13 +265,17 @@ footer .w{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;ali
       </div>
     </div>
 
-    <div style="width:100%;min-width:0;">
-      <video controls playsinline preload="metadata"
-        poster="realisation-1.jpg"
-        style="display:block;width:100%;height:auto;max-height:320px;object-fit:contain;background:#000;border:1px solid var(--line);border-radius:14px;">
-        <source src="YELEC63_video.mp4" type="video/mp4">
-        Your browser does not support video playback.
-      </video>
+    <div class="hero-visual">
+      <div class="ye-3d-scene" id="repairScene" data-state="loading" role="region" aria-label="Démonstration 3D interactive d'un dépannage chez YELEC63">
+        <canvas class="ye-3d-canvas" id="repairCanvas" aria-hidden="true"></canvas>
+        <div class="ye-3d-top" aria-hidden="true"><span class="ye-3d-led"></span> YELEC63 · Puy-de-Dôme</div>
+        <div class="ye-3d-status">
+          <span class="ye-3d-status__lamp" id="repairLamp" aria-hidden="true"></span>
+          <span class="ye-3d-status__copy"><strong id="repairTitle">Chargement de la scène 3D</strong><small id="repairStatus" aria-live="polite">L'électricien arrive dans l'atelier…</small></span>
+          <button class="ye-3d-control" id="repairControl" type="button" aria-label="Relancer la démonstration 3D">Rejouer la scène <span aria-hidden="true">↻</span></button>
+        </div>
+        <span class="ye-3d-caption" aria-hidden="true">SCÈNE 3D · EN DIRECT</span>
+      </div>
     </div>
 
   </div>
@@ -475,5 +483,15 @@ addEventListener('keydown',e=>{
 });
 </script>
 <script src="ye-extras.js" defer></script>
+<script type="module">
+import("./ye-3d.js").catch(error=>{
+  const title=document.getElementById("repairTitle"),status=document.getElementById("repairStatus"),button=document.getElementById("repairControl"),scene=document.getElementById("repairScene");
+  if(title)title.textContent="Scène 3D indisponible";
+  if(status)status.textContent="La bibliothèque 3D n'a pas pu être chargée. Vérifiez votre connexion puis réessayez.";
+  if(button)button.disabled=true;
+  if(scene)scene.dataset.state="error";
+  console.error("YELEC63 Three.js import failed:",error);
+});
+</script>
 </body>
 </html>
