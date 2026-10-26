@@ -166,26 +166,32 @@ if (stage && canvas && greetingButton && title && status) {
 
     function applyWavePose(progress) {
       if (!waveBones) return;
-      const lift = smoothstep(0, 0.2, progress) * (1 - smoothstep(0.78, 1, progress));
-      const greetingProgress = THREE.MathUtils.clamp((progress - 0.12) / 0.58, 0, 1);
+      const lift = smoothstep(0, 0.12, progress) * (1 - smoothstep(0.9, 1, progress));
+      const greetingProgress = THREE.MathUtils.clamp((progress - 0.1) / 0.78, 0, 1);
+      const armSway = Math.sin(greetingProgress * Math.PI * 6)
+        * Math.sin(greetingProgress * Math.PI) * 0.36;
+      const forearmSwing = Math.sin(greetingProgress * Math.PI * 6)
+        * Math.sin(greetingProgress * Math.PI) * 0.1;
       const handSwing = Math.sin(greetingProgress * Math.PI * 6)
-        * Math.sin(greetingProgress * Math.PI) * 0.62;
+        * Math.sin(greetingProgress * Math.PI) * 1.05;
+      const handRoll = Math.sin(greetingProgress * Math.PI * 6)
+        * Math.sin(greetingProgress * Math.PI) * 0.45;
 
       if (waveBones.upperArm) {
-        offsetQuaternion.setFromAxisAngle(localZ, -2.05 * lift);
+        offsetQuaternion.setFromAxisAngle(localZ, -1.65 * lift);
+        waveBones.upperArm.quaternion.multiply(offsetQuaternion);
+        offsetQuaternion.setFromAxisAngle(localY, armSway);
         waveBones.upperArm.quaternion.multiply(offsetQuaternion);
       }
       if (waveBones.forearm) {
-        offsetQuaternion.setFromAxisAngle(localZ, 1.3 * lift);
+        offsetQuaternion.setFromAxisAngle(localZ, 0.45 * lift + forearmSwing);
         waveBones.forearm.quaternion.multiply(offsetQuaternion);
       }
       if (waveBones.hand) {
         offsetQuaternion.setFromAxisAngle(localY, handSwing);
         waveBones.hand.quaternion.multiply(offsetQuaternion);
-      }
-      if (waveBones.head) {
-        offsetQuaternion.setFromAxisAngle(localY, -0.58 * lift);
-        waveBones.head.quaternion.multiply(offsetQuaternion);
+        offsetQuaternion.setFromAxisAngle(localZ, handRoll);
+        waveBones.hand.quaternion.multiply(offsetQuaternion);
       }
     }
 
@@ -312,7 +318,6 @@ if (stage && canvas && greetingButton && title && status) {
           Spine01: "spine_02",
           Spine02: "spine_03",
           NeckTwist01: "neck_01",
-          Head: "Head",
           L_Clavicle: "clavicle_l",
           L_Upperarm: "upperarm_l",
           L_Forearm: "lowerarm_l",
@@ -339,7 +344,6 @@ if (stage && canvas && greetingButton && title && status) {
           upperArm: findBone(technician, ["R_Upperarm"]),
           forearm: findBone(technician, ["R_Forearm"]),
           hand: findBone(technician, ["R_Hand"]),
-          head: findBone(technician, ["Head"]),
         };
         mixer = new THREE.AnimationMixer(targetMesh);
         repairAction = mixer.clipAction(repairClip);
