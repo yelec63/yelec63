@@ -1,5 +1,0 @@
-Animation source: Quaternius, Universal Animation Library (Standard).
-Selected motion: Fixing_Kneeling, retargeted from the Standard GLB to the existing YELEC63 technician rig.
-Source: https://quaternius.itch.io/universal-animation-library
-License: CC0 1.0 Universal (as stated in the included Standard pack's License.txt).
-The greeting wave is a native procedural animation and does not use a third-party clip.
